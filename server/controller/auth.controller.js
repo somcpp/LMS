@@ -65,7 +65,8 @@ export const loginUser = async (req, res) => {
     }
 
     const token = generateToken(user._id);
-
+    const userobj = user.toObject();
+    delete userobj.password;
     return res.status(200)
               .cookie("token", token, {
                 httpOnly: true,
@@ -74,7 +75,8 @@ export const loginUser = async (req, res) => {
               })
               .json({
                 success:true,
-                message: `Welcome Back ${user.name}`
+                message: `Welcome Back ${user.name}`,
+                user: userobj
               })
   } catch (error) {
     return res.status(400).json({

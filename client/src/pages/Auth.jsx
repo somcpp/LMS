@@ -17,9 +17,15 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { useLoginUserMutation, useSignupUserMutation } from "@/api/authApi"
+import { Loader2 } from "lucide-react"
+import { toast } from "sonner"
+import { useNavigate } from "react-router-dom"
+
 
 export function Auth() {
+  const navigate = useNavigate();
 
   // LOGIN STATE
   const [loginInput, setLoginInput] = useState({
@@ -33,6 +39,17 @@ export function Auth() {
     email: "",
     password: ""
   });
+
+  // RTK QUERY MUTATION HOOKS
+  const [
+    signupUser, 
+    { data: signupData, error: signupError, isLoading: signupIsLoading, isSuccess: signupIsSuccess }
+  ] = useSignupUserMutation();
+
+  const [
+    loginUser, 
+    { data: loginData, error: loginError, isLoading: loginIsLoading, isSuccess: loginIsSuccess }
+  ] = useLoginUserMutation();
 
   // HANDLE INPUT CHANGE
   const handleChange = (e, type) => {
@@ -52,15 +69,29 @@ export function Auth() {
   };
 
   // HANDLE FORM SUBMIT
-  const handleRegistration = (e, type) => {
-    e.preventDefault();
-
-    if (type === "signUp") {
-      console.log("Signup Data:", signupInput);
-    } else {
-      console.log("Login Data:", loginInput);
+  const handleRegistration = async(e, type) => {
+    try {
+      e.preventDefault();
+  
+      if (type === "signUp") {
+        await signupUser(signupInput).unwrap();
+      } else {
+        await loginUser(loginInput).unwrap();
+      }
+      navigate('/')
+    } catch (error) {
+      console.log(error);
     }
   };
+
+  useEffect(()=>{
+    if(signupIsSuccess && signupData) {
+      toast.success(signupData.message);
+    }
+    // if(loginIsSuccess && loginData) {
+    //   toast.success(loginData.message);
+    // }
+  },[signupIsSuccess,signupData])
 
   return (
     <div className="flex justify-center items-center min-h-screen">
@@ -132,8 +163,21 @@ export function Auth() {
                   />
                 </div>
 
-                <Button className="w-full" type="submit">
-                  Create Account
+                {/* ERROR DISPLAY */}
+                {signupError && (
+                  <p className="text-sm font-medium text-destructive">
+                    {signupError?.data?.message || "An error occurred during signup."}
+                  </p>
+                )}
+
+                <Button className="w-full" type="submit" disabled={signupIsLoading}>
+                  {
+                    signupIsLoading? (
+                      <div>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin"/>
+                      </div>
+                    ): "Create Account"
+                  }
                 </Button>
 
               </form>
@@ -188,8 +232,21 @@ export function Auth() {
                   />
                 </div>
 
-                <Button className="w-full" type="submit">
-                  Login
+                {/* ERROR DISPLAY */}
+                {loginError && (
+                  <p className="text-sm font-medium text-destructive">
+                    {loginError?.data?.message || "An error occurred during login."}
+                  </p>
+                )}
+
+                <Button className="w-full" type="submit" disabled={loginIsLoading}>
+                  {
+                    loginIsLoading? (
+                      <div>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin"/>
+                      </div>
+                    ): "Login"
+                  }
                 </Button>
 
               </form>

@@ -3,14 +3,17 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.jsx";
 import { BrowserRouter } from "react-router-dom";
-import AuthProvider from "./context/userContext";
+import { Provider } from "react-redux";
+import { appStore } from "./app/store";
+import { Toaster } from "./components/ui/sonner";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <BrowserRouter>
-      <AuthProvider>
+    <Provider store={appStore}>
+      <BrowserRouter>
         <App />
-      </AuthProvider>
-    </BrowserRouter>
+        <Toaster/>
+      </BrowserRouter>
+    </Provider>
   </StrictMode>,
 );
