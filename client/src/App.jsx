@@ -2,7 +2,8 @@ import React from 'react'
 import {Route,Routes} from 'react-router-dom'
 import { Button } from './components/ui/button'
 import { Auth } from './pages/Auth'
-import Home from './pages/Home'
+import Home from './pages/student/Home/HomePage'
+
 
 
 const App = () => {
