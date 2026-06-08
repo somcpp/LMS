@@ -93,7 +93,7 @@ export const logoutUser = async (req,res) => {
     })
     .json({
       success: true,
-      message: "User logged out successfully"
+      message: "logged out successfully"
     })
   } catch (error) {
     return res.status(400).json({
