@@ -1,4 +1,4 @@
-import { userLoggedIn } from "@/redux/authSlice";
+import { userLoggedIn, userLoggedOut } from "@/redux/authSlice";
 import {createApi,fetchBaseQuery} from "@reduxjs/toolkit/query/react"
 
 const AUTH_API = "http://localhost:8080/auth";
@@ -31,11 +31,25 @@ export const authApi = createApi({
             console.log(error);
           }
         }
-      })
+    }),
+    logoutUser: builder.mutation({
+      query: () => ({
+        url: "logout",
+        method: "GET"
+      }),
+      async onQueryStarted(arg, {queryFulfilled,dispatch}) {
+          try {
+            dispatch(userLoggedOut())
+          } catch (error) {
+            console.log(error);
+          }
+        }
+    })
   })
 })
 
 export const {
   useSignupUserMutation,
-  useLoginUserMutation
+  useLoginUserMutation,
+  useLogoutUserMutation
 } = authApi;
