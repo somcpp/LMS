@@ -88,14 +88,17 @@ export function Auth() {
     if(signupIsSuccess && signupData) {
       toast.success(signupData.message);
     }
-    // if(loginIsSuccess && loginData) {
-    //   toast.success(loginData.message);
-    // }
   },[signupIsSuccess,signupData])
+
+  useEffect(()=>{
+    if(loginIsSuccess && loginData) {
+      toast.success(loginData.message);
+    }
+  },[loginIsSuccess,loginData])
 
   return (
     <div className="flex justify-center items-center min-h-screen">
-      <Tabs defaultValue="signup" className="w-[400px]">
+      <Tabs defaultValue="login" className="w-[400px]">
 
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="signup">Sign Up</TabsTrigger>
