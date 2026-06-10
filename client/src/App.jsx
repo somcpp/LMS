@@ -9,6 +9,13 @@ import { useDispatch } from 'react-redux'
 import { useGetUserProfileQuery } from './api/userApi'
 import { userLoggedIn } from './redux/authSlice'
 import LoadingSpinner from './components/LoadingSpinner'
+import Sidebar from './pages/admin/Sidebar'
+import Dashboard from './pages/admin/Dashboard'
+import CourseTable from './pages/admin/course/CourseTable'
+import AddCourse from './pages/admin/course/AddCourse'
+import EditCourse from './pages/admin/course/EditCourse'
+import EditLecture from './pages/admin/lecture/EditLecture'
+import CreateLecture from './pages/admin/lecture/CreateLecture'
 
 
 const appRouter = createBrowserRouter([
@@ -33,6 +40,40 @@ const appRouter = createBrowserRouter([
       {
         path: "/mylearning",
         element: <MyLeariningPage/>
+      },
+
+      // admin routes start from here
+      {
+        path: "/admin",
+        element: (
+          <Sidebar/>
+        ),
+        children: [
+          {
+            path: "dashboard",
+            element: <Dashboard />,
+          },
+          {
+            path: "course",
+            element: <CourseTable />,
+          },
+          {
+            path: "course/create",
+            element: <AddCourse />,
+          },
+          {
+            path: "course/:courseId",
+            element: <EditCourse />,
+          },
+          {
+            path: "course/:courseId/lecture",
+            element: <CreateLecture />,
+          },
+          {
+            path: "course/:courseId/lecture/:lectureId",
+            element: <EditLecture />,
+          },
+        ]
       }
       
     ]
