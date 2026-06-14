@@ -1,56 +1,63 @@
-import { createApi,fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-const COURSE_API = "http://localhost:8080/course/"
+const COURSE_API = "http://localhost:8080/course/";
 
 export const courseApi = createApi({
   reducerPath: "courseApi",
   baseQuery: fetchBaseQuery({
     baseUrl: COURSE_API,
-    credentials: 'include'
+    credentials: "include",
   }),
   endpoints: (builder) => ({
     createCourse: builder.mutation({
-        query: (inputData) => ({
-          url: "create",
-          method: "POST",
-          body: inputData
-        }),
-        invalidatesTags: ['refetch_creator_courses']
+      query: (inputData) => ({
+        url: "create",
+        method: "POST",
+        body: inputData,
+      }),
+      invalidatesTags: ["refetch_creator_courses"],
+    }),
+    getPublishedCourses: builder.query({
+      query: () => ({
+        url: "published-courses",
+        method: "GET",
+      }),
     }),
     getCreatorCourses: builder.query({
       query: () => ({
-        url: ""
+        url: "",
       }),
-      providesTags: ['refetch_creator_courses']
+      providesTags: ["refetch_creator_courses"],
     }),
     updateCourse: builder.mutation({
-      query: ({formData,courseId}) => ({
+      query: ({ formData, courseId }) => ({
         url: `update/${courseId}`,
-        method: 'PUT',
-        body: formData
+        method: "PUT",
+        body: formData,
       }),
-      invalidatesTags: ['refetch_creator_courses']
+      invalidatesTags: ["refetch_creator_courses"],
     }),
     getCourseById: builder.query({
       query: (courseId) => ({
-        url:`${courseId}`
+        url: `${courseId}`,
       }),
-      providesTags: ['refetch_it']
+      providesTags: ["refetch_it"],
     }),
     publishCourse: builder.mutation({
-      query: ({courseId, query}) => ({
+      query: ({ courseId, query }) => ({
         url: `/publish/${courseId}?publish=${query}`,
-        method: "PUT"
+        method: "PUT",
       }),
-      invalidatesTags: ['refetch_creator_courses','refetch_it']
-    })
-  })
-})
+      invalidatesTags: ["refetch_creator_courses", "refetch_it"],
+    }),
+  }),
+});
 
 export const {
   useCreateCourseMutation,
   useGetCreatorCoursesQuery,
   useUpdateCourseMutation,
   useGetCourseByIdQuery,
-  usePublishCourseMutation
-} = courseApi
+  usePublishCourseMutation,
+  useGetPublishedCoursesQuery,
+} = courseApi;
