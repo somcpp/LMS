@@ -22,13 +22,14 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import {
   useGetCourseByIdQuery,
+  usePublishCourseMutation,
   useUpdateCourseMutation,
 } from "@/api/courseApi";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 const CourseTab = () => {
-  const isPublished = true;
+  const [isPublished, setIspublished] = useState(false);
   const params = useParams();
   const courseId = params.courseId;
   const navigate = useNavigate(); // 🔥 FIX: Added missing navigate initialization
@@ -36,6 +37,7 @@ const CourseTab = () => {
   const [previewThumbnail, setPreviewThumbnail] = useState("");
   const [updateCourse, { data, isLoading, isSuccess, error }] =
     useUpdateCourseMutation();
+  const [publishCourse, {data:publishData, isLoading: publishLoading, isSuccess: publishSuccess}] = usePublishCourseMutation();
     
   const {
     data: courseData,
@@ -65,6 +67,7 @@ const CourseTab = () => {
       coursePrice: courseData.course.coursePrice || "",
     });
     setPreviewThumbnail(courseData.course.courseThumbnail)
+    setIspublished(courseData.course.isPublished);
   }
 }, [courseData]);
 
@@ -121,6 +124,20 @@ const CourseTab = () => {
     );
   }
 
+  const handlePublish = async() => {
+    try {
+      await publishCourse({courseId,query: !isPublished}).unwrap();
+      setIspublished(!isPublished);
+      if(publishSuccess) {
+      toast.success(publishData.message)
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("something went wrong")
+    }
+    
+  }
+
   return (
     <Card className={"mt-2"}>
       <CardHeader className={"flex justify-between"}>
@@ -131,8 +148,13 @@ const CourseTab = () => {
           </CardDescription>
         </div>
         <div>
-          <Button variant="outline">
-            {isPublished ? "Unpublish" : "publish"}
+          <Button variant="outline" onClick={handlePublish} 
+            disabled={courseData.course.lectures.length===0}
+          >
+            {publishLoading?
+             "publishing..." : isPublished ? "Unpublish" : "publish"
+            }
+            
           </Button>
         </div>
       </CardHeader>
