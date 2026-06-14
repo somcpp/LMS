@@ -63,8 +63,8 @@ const CourseTab = () => {
       category: courseData.course.category || "",
       courseLevel: courseData.course.courseLevel || "",
       coursePrice: courseData.course.coursePrice || "",
-      courseThumbnail: courseData.course.courseThumbnail || "",
     });
+    setPreviewThumbnail(courseData.course.courseThumbnail)
   }
 }, [courseData]);
 
