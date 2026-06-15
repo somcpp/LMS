@@ -6,7 +6,7 @@ import CoursesSection from './CoursesSection'
 const Home = () => {
   return (
     <div>
-      <div className="pt-16">
+      <div className="">
         {/* Main content goes here */}
         <HeroSection/>
         <CoursesSection/>

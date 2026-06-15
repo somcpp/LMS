@@ -41,10 +41,13 @@ const Navbar = () => {
     <div className="h-16 dark:bg-[#0A0A0A] bg-white border-b dark:border-b-gray-800 border-b-gray-200 fixed top-0 left-0 right-0 duration-300 z-10">
       {/* Desktop */}
       <div className="hidden md:flex max-w-7xl mx-auto justify-between gap-10 h-full items-center px-3">
-        <div className="flex items-center gap-2">
-          <School size={"30"} />
-          <h1 className="font-extrabold text-xl">E-Learning</h1>
-        </div>
+        <Link to={'/'}>
+          <div className="flex items-center gap-2">
+            <School size={"30"} />
+            <h1 className="font-extrabold text-xl">E-Learning</h1>
+          </div>
+        </Link>
+        
 
         {/* User icons and dark mode icons */}
         <div className="flex items-center gap-4">
