@@ -35,7 +35,8 @@ export const lectureApi = createApi({
       query: ({lectureId,courseId}) => ({
         url: `${courseId}/${lectureId}`,
         method: "DELETE"
-      })
+      }),
+      invalidatesTags: ["Refetch_Lecture"]
     }),
     updateLecture: builder.mutation({
       query: ({
