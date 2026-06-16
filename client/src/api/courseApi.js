@@ -51,6 +51,19 @@ export const courseApi = createApi({
       }),
       invalidatesTags: ["refetch_creator_courses", "refetch_it"],
     }),
+    getSearchCourse: builder.query({
+      query: ({ query = "", categories = [], sortByPrice = "" }) => {
+        // Build query string with all search params
+        const params = new URLSearchParams();
+        if (query) params.append("query", query);
+        categories.forEach((cat) => params.append("categories", cat));
+        if (sortByPrice) params.append("sortByPrice", sortByPrice);
+        return {
+          url: `/search?${params.toString()}`,
+          method: "GET",
+        };
+      },
+    }),
   }),
 });
 
@@ -61,4 +74,5 @@ export const {
   useGetCourseByIdQuery,
   usePublishCourseMutation,
   useGetPublishedCoursesQuery,
+  useGetSearchCourseQuery,
 } = courseApi;
