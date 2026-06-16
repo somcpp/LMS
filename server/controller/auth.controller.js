@@ -11,8 +11,8 @@ export const createUser = async (req, res) => {
         message: "All fields are required.",
       });
     }
-    const user = await User.findOne({ email });
-    if (user) {
+    const ExistingUser = await User.findOne({ email });
+    if (ExistingUser) {
       return res.status(400).json({
         success: false,
         message: "User already exists with this email",
@@ -20,20 +20,32 @@ export const createUser = async (req, res) => {
     }
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    await User.create({
+    const user = await User.create({
       name,
       email,
       password: hashedPassword,
     });
 
-    return res.status(201).json({
+    const userobj = user.toObject();
+    delete userobj.password;
+
+    const token = generateToken(user._id);
+    return res.status(201)
+    .cookie("token", token, {
+                httpOnly: true,
+                sameSite: "strict",
+                maxAge: 24*60*60*1000
+              })
+    .json({
       success: true,
-      message: "Account created Successfully",
+      message: `Welcome ${name}`,
+      user: userobj
     });
   } catch (error) {
+    console.log(error.message);
     return res.status(400).json({
       success: false,
-      message: "Failed to register" + error.message,
+      message: "Failed to register",
     });
   }
 };
