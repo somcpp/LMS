@@ -123,7 +123,7 @@ const LectureTab = () => {
 
   useEffect(() => {
     if (removeSuccess) {
-      toast.success(removeData?.message || "Lecture removed successfully");
+      toast.success("Lecture removed successfully");
     }
   }, [removeSuccess, removeData]);
 
