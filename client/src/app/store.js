@@ -5,6 +5,7 @@ import { userApi } from "@/api/userApi";
 import { courseApi } from "@/api/courseApi";
 import { lectureApi } from "@/api/lectureApi";
 import { purchaseApi } from "@/api/purchaseApi";
+import { courseProgressApi } from "@/api/courseProgressApi";
 
 export const appStore = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ export const appStore = configureStore({
     [courseApi.reducerPath]: courseApi.reducer,
     [lectureApi.reducerPath]: lectureApi.reducer,
     [purchaseApi.reducerPath]: purchaseApi.reducer,
+    [courseProgressApi.reducerPath]: courseProgressApi.reducer
   },
   middleware: (defaultMiddleware) =>
     defaultMiddleware().concat(
@@ -22,5 +24,6 @@ export const appStore = configureStore({
       courseApi.middleware,
       lectureApi.middleware,
       purchaseApi.middleware,
+      courseProgressApi.middleware
     ),
 });
