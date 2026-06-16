@@ -132,11 +132,12 @@ const CourseProgress = () => {
         <div className="flex-1 lg:w-3/5">
           <div className="rounded-xl overflow-hidden shadow-lg bg-black">
             {activeLecture?.videoUrl ? (
-              <video
+              <ReactPlayer
                 key={activeLecture._id}
                 src={activeLecture.videoUrl}
-                controls
-                className="w-full aspect-video"
+                controls={true}
+                width="100%"
+                height="400px"
                 onEnded={handleVideoEnded}
               />
             ) : (
