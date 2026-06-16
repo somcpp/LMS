@@ -1,6 +1,17 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const HeroSection = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/course/search?query=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
+
   return (
     <div className='relative bg-gradient-to-r from-blue-500 to-indigo-600 dark:from-gray-800 dark:to-gray-900 py-12 px-4 text-center'>
       <div className='max-w-3xl mx-auto'>
@@ -15,9 +26,11 @@ const HeroSection = () => {
         <div className='flex flex-col sm:flex-col items-center justify-center gap-4 max-w-2xl mx-auto'>
           
           {/* Unified Search Bar */}
-          <form onSubmit={(e) => e.preventDefault()} className='flex w-full items-center bg-white dark:bg-gray-700 rounded-full shadow-lg overflow-hidden border border-transparent focus-within:border-blue-300 dark:focus-within:border-gray-500 mb-4'>
+          <form onSubmit={handleSearch} className='flex w-full items-center bg-white dark:bg-gray-700 rounded-full shadow-lg overflow-hidden border border-transparent focus-within:border-blue-300 dark:focus-within:border-gray-500 mb-4'>
             <input 
               type="text" 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search for courses..."
               className='w-full border-none bg-transparent px-6 py-3 text-gray-800 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-0'
             />
@@ -30,7 +43,10 @@ const HeroSection = () => {
           </form>
 
           {/* Secondary Action Button */}
-          <button className="w-full sm:w-auto bg-white dark:bg-gray-800 text-blue-600 dark:text-white hover:cursor-pointer font-medium px-8 py-3 rounded-full shadow-md transition-all hover:bg-gray-50 cursor-pointer dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-600 shrink-0">
+          <button
+            onClick={() => navigate('/course/search')}
+            className="w-full sm:w-auto bg-white dark:bg-gray-800 text-blue-600 dark:text-white hover:cursor-pointer font-medium px-8 py-3 rounded-full shadow-md transition-all hover:bg-gray-50 cursor-pointer dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-600 shrink-0"
+          >
             Explore Courses
           </button>
           
