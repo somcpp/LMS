@@ -1,6 +1,7 @@
 import Stripe from "stripe";
 import { Course } from "../models/course.model.js";
 import { CoursePurshase } from "../models/purchaseCourse.model.js";
+import { User } from "../models/user.model.js";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -67,6 +68,9 @@ export const createCheckoutSession = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
+    res.status(500).json({
+      message: "Some error occured while processing payment"
+    })
   }
 };
 
