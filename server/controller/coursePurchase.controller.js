@@ -22,7 +22,7 @@ export const createCheckoutSession = async (req, res) => {
       courseId,
       userId,
       amount: course.coursePrice,
-      status: 'pending',
+      status: "pending",
     });
 
     // create a stripe checkout session
@@ -69,8 +69,8 @@ export const createCheckoutSession = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({
-      message: "Some error occured while processing payment"
-    })
+      message: "Some error occured while processing payment",
+    });
   }
 };
 
@@ -165,12 +165,12 @@ export const get_Course_Details_With_Purchase_Status = async (req, res) => {
 
     const purchased = await CoursePurshase.findOne({ userId, courseId });
     let coursePurchased = false;
-    if(purchased && purchased.status === "completed") {
+    if (purchased && purchased.status === "completed") {
       coursePurchased = true;
     }
     return res.status(200).json({
       course,
-      purchased: coursePurchased
+      purchased: coursePurchased,
     });
   } catch (error) {
     console.log(error);
@@ -180,10 +180,26 @@ export const get_Course_Details_With_Purchase_Status = async (req, res) => {
   }
 };
 
-// export const getAllPurchasedCourses = async (_,res) => {
-//   try {
-//     const purchasedCourses = 
-//   } catch (error) {
-    
-//   }
-// }
+export const getAllPurchasedCourses = async (req, res) => {
+  try {
+    const creatorId = req.id;
+    const purchasedCourses = await CoursePurshase.find({
+      status: "completed",
+    }).populate({
+      path: "courseId",
+      match: { creator: creatorId },
+    });
+    const filteredPurchases = purchasedCourses.filter(
+      (purchase) => purchase.courseId,
+    );
+
+    return res.status(200).json({
+      purchasedCourses: filteredPurchases || [],
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Some error occured while fetching purchased courses",
+    });
+  }
+};
