@@ -132,7 +132,7 @@ const CourseDetail = () => {
                   Continue Course
                 </Button>
               ) : (
-                <BuyCourseButton courseId={courseId} />
+                <BuyCourseButton courseId={courseId}/>
               )}
             </CardFooter>
           </Card>
