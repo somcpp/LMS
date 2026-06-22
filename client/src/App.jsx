@@ -19,6 +19,8 @@ import CreateLecture from "./pages/admin/lecture/CreateLecture";
 import CourseDetail from "./pages/student/Course/CourseDetail";
 import CourseProgress from "./pages/student/Course/CourseProgress";
 import SearchPage from "./pages/student/Search/SearchPage";
+import { AdminRoute, AuthenticatedUser, ProtectedRoute, PurchasedCourse } from "./components/ProtectedRotues";
+
 
 const appRouter = createBrowserRouter([
   {
@@ -29,34 +31,75 @@ const appRouter = createBrowserRouter([
         path: "/",
         element: <Home />,
       },
+
+      // Auth page (logged in users cannot access)
       {
         path: "/auth",
-        element: <Auth />,
+        element: (
+          <AuthenticatedUser>
+            <Auth />
+          </AuthenticatedUser>
+        ),
       },
+
+      // User protected routes
       {
         path: "/profile",
-        element: <ProfilePage />,
+        element: (
+          <ProtectedRoute>
+            <ProfilePage />
+          </ProtectedRoute>
+        ),
       },
+
       {
         path: "/mylearning",
-        element: <MyLeariningPage />,
+        element: (
+          <ProtectedRoute>
+            <MyLeariningPage />
+          </ProtectedRoute>
+        ),
       },
+
       {
         path: "course-detail/:courseId",
-        element: <CourseDetail />,
+        element: (
+          <ProtectedRoute>
+            <CourseDetail />
+          </ProtectedRoute>
+        ),
       },
+
       {
         path: "course-progress/:courseId",
-        element: <CourseProgress />,
+        element: (
+          <ProtectedRoute>
+            <PurchasedCourse>
+              <CourseProgress />
+            </PurchasedCourse>
+          </ProtectedRoute>
+        ),
       },
+
       {
         path: "course/search",
-        element: <SearchPage/>
+        element: (
+          <ProtectedRoute>
+            <SearchPage />
+          </ProtectedRoute>
+        ),
       },
-      // admin routes start from here
+
+      // Admin routes
       {
         path: "/admin",
-        element: <Sidebar />,
+        element: (
+          <ProtectedRoute>
+            <AdminRoute>
+              <Sidebar />
+            </AdminRoute>
+          </ProtectedRoute>
+        ),
         children: [
           {
             path: "dashboard",
