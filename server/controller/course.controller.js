@@ -1,5 +1,6 @@
 import { Course } from "../models/course.model.js";
-import { deletePhoto, uploadMedia } from "../utils/cloudinary.js";
+import { Lecture } from "../models/lecture.model.js";
+import { deletePhoto, uploadMedia , deleteVideo } from "../utils/cloudinary.js";
 
 export const createCourse = async (req, res) => {
   try {
@@ -219,3 +220,46 @@ export const searchCourse = async (req, res) => {
     });
   }
 };
+
+export const deleteCourse = async(req,res) => {
+  try {
+    const {courseId} = req.params;
+
+    //find course
+    const course = await Course.findById(courseId);
+
+    if(!course) {
+      return res.status(404).json({
+        success: false,
+        message: "Course not found"
+      })
+    }
+    
+    //find all lectures
+    const lectures = await Lecture.find({
+      _id: {$in : course.lectures}
+    });
+
+    //delete videos from cloudinary
+    for(const lecture of lectures) {
+      if(lecture.publicId) {
+        await deleteVideo(lecture.publicId);
+      }
+    }
+    await Lecture.deleteMany({
+      _id: {$in : course.lectures}
+    })
+    await Course.findByIdAndDelete(courseId);
+
+    return res.status(200).json({
+      success: true,
+      message: "Course deleted successfully"
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      success: false,
+      message: "something went wrong"
+    })
+  }
+}
