@@ -47,7 +47,7 @@ const LectureTab = () => {
     }
   }, [lecture]);
 
-  const MEDIA_API = "http://localhost:8080/media/upload";
+  const MEDIA_API = "http://localhost:8080/api/media/upload";
 
   // 1. Only capture the file locally, do NOT upload yet
   const fileChangeHandler = (e) => {

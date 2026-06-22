@@ -26,13 +26,13 @@ app.use(cors({
 
 connectDB(); 
 
-app.use('/auth', authRouter);
-app.use('/user', userRouter);
-app.use('/course', courseRouter);
-app.use('/lecture',lectureRouter);
-app.use('/media', mediaRouter)
-app.use('/purchase',purchaseRouter);
-app.use('/progress', courseProgressRouter);
+app.use('/api/auth', authRouter);
+app.use('/api/user', userRouter);
+app.use('/api/course', courseRouter);
+app.use('/api/lecture',lectureRouter);
+app.use('/api/media', mediaRouter)
+app.use('/api/purchase',purchaseRouter);
+app.use('/api/progress', courseProgressRouter);
 
 app.listen(PORT, () => {
   console.log(`server is listening at port ${PORT}`);
