@@ -1,10 +1,11 @@
-import { User } from "../models/user.model";
+import { User } from "../models/user.model.js";
 
-export const isAdmin = (req,res,next) => {
+export const isAdmin = async(req,res,next) => {
   try {
     const userId = req.id;
-    const user = User.findById(userId);
+    const user = await User.findById(userId);
     const {role} = user;
+
     if(role !== "instructor") {
       return res.status(403).json({
         success: false,
