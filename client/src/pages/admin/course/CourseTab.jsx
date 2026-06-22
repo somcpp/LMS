@@ -19,8 +19,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+
 import { useNavigate, useParams } from "react-router-dom";
 import {
+  useDeleteCourseMutation,
   useGetCourseByIdQuery,
   usePublishCourseMutation,
   useUpdateCourseMutation,
@@ -37,13 +50,21 @@ const CourseTab = () => {
   const [previewThumbnail, setPreviewThumbnail] = useState("");
   const [updateCourse, { data, isLoading, isSuccess, error }] =
     useUpdateCourseMutation();
-  const [publishCourse, {data:publishData, isLoading: publishLoading, isSuccess: publishSuccess}] = usePublishCourseMutation();
-    
+  const [
+    publishCourse,
+    { data: publishData, isLoading: publishLoading, isSuccess: publishSuccess },
+  ] = usePublishCourseMutation();
+
   const {
     data: courseData,
     isLoading: courseLoading,
     isSuccess: getCourseSuccess,
   } = useGetCourseByIdQuery(courseId, { skip: !courseId });
+
+  const [
+    deleteCourse,
+    { data: deleteData, isLoading: deleteLoading, isSuccess: deleteSuccess },
+  ] = useDeleteCourseMutation();
 
   const [input, setInput] = useState({
     courseTitle: "",
@@ -54,22 +75,21 @@ const CourseTab = () => {
     coursePrice: "",
     courseThumbnail: "",
   });
-  
-  useEffect(() => {
 
-  if (courseData?.course) {
-    setInput({
-      courseTitle: courseData.course.courseTitle || "",
-      subTitle: courseData.course.subTitle || "",
-      description: courseData.course.description || "",
-      category: courseData.course.category || "",
-      courseLevel: courseData.course.courseLevel || "",
-      coursePrice: courseData.course.coursePrice || "",
-    });
-    setPreviewThumbnail(courseData.course.courseThumbnail)
-    setIspublished(courseData.course.isPublished);
-  }
-}, [courseData]);
+  useEffect(() => {
+    if (courseData?.course) {
+      setInput({
+        courseTitle: courseData.course.courseTitle || "",
+        subTitle: courseData.course.subTitle || "",
+        description: courseData.course.description || "",
+        category: courseData.course.category || "",
+        courseLevel: courseData.course.courseLevel || "",
+        coursePrice: courseData.course.coursePrice || "",
+      });
+      setPreviewThumbnail(courseData.course.courseThumbnail);
+      setIspublished(courseData.course.isPublished);
+    }
+  }, [courseData]);
 
   const changeEventHandler = (e) => {
     const { name, value } = e.target;
@@ -124,19 +144,31 @@ const CourseTab = () => {
     );
   }
 
-  const handlePublish = async() => {
+  const handlePublish = async () => {
     try {
-      await publishCourse({courseId,query: !isPublished}).unwrap();
+      await publishCourse({ courseId, query: !isPublished }).unwrap();
       setIspublished(!isPublished);
-      if(publishSuccess) {
-      toast.success(publishData.message)
+      if (publishSuccess) {
+        toast.success(publishData.message);
       }
     } catch (error) {
       console.log(error);
-      toast.error("something went wrong")
+      toast.error("something went wrong");
     }
-    
-  }
+  };
+
+  const handleDelete = async () => {
+    try {
+      await deleteCourse(courseId).unwrap();
+      if (deleteSuccess) {
+        toast.success(deleteData.message);
+      }
+      navigate("/admin/course");
+    } catch (error) {
+      console.log(error);
+      toast.error("something went wrong");
+    }
+  };
 
   return (
     <Card className={"mt-2"}>
@@ -148,13 +180,16 @@ const CourseTab = () => {
           </CardDescription>
         </div>
         <div>
-          <Button variant="outline" onClick={handlePublish} 
-            disabled={courseData.course.lectures.length===0}
+          <Button
+            variant="outline"
+            onClick={handlePublish}
+            disabled={courseData.course.lectures.length === 0}
           >
-            {publishLoading?
-             "publishing..." : isPublished ? "Unpublish" : "publish"
-            }
-            
+            {publishLoading
+              ? "publishing..."
+              : isPublished
+                ? "Unpublish"
+                : "publish"}
           </Button>
         </div>
       </CardHeader>
@@ -189,10 +224,7 @@ const CourseTab = () => {
           <div className="space-y-2">
             <Label>Category</Label>
             {/* 🔥 FIX: Changed defaultValue to value */}
-            <Select
-              value={input.category} 
-              onValueChange={selectCategory}
-            >
+            <Select value={input.category} onValueChange={selectCategory}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Select a category" />
               </SelectTrigger>
@@ -222,10 +254,7 @@ const CourseTab = () => {
           <div className="space-y-2">
             <Label>Course Level</Label>
             {/* 🔥 FIX: Changed defaultValue to value */}
-            <Select
-              value={input.courseLevel}
-              onValueChange={selectCourseLevel}
-            >
+            <Select value={input.courseLevel} onValueChange={selectCourseLevel}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Select a course level" />
               </SelectTrigger>
@@ -287,6 +316,29 @@ const CourseTab = () => {
               "Save"
             )}
           </Button>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="destructive">Delete course</Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will permanently delete
+                  your course and remove it from our servers.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={handleDelete}
+                  variant="destructive"
+                >
+                  Yes, Delete course
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       </CardContent>
     </Card>
