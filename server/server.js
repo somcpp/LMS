@@ -30,6 +30,12 @@ app.use(cors({
 
 connectDB(); 
 
+app.use('/api/healthcheck',(req,res)=>{
+  res.json({
+    message: "Server is running",
+    success: true
+  })
+});
 app.use('/api/auth', authRouter);
 app.use('/api/user', userRouter);
 app.use('/api/course', courseRouter);
