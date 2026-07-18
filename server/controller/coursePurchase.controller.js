@@ -42,8 +42,8 @@ export const createCheckoutSession = async (req, res) => {
         },
       ],
       mode: "payment",
-      success_url: `http://localhost:5173/course-progress/${courseId}`, // once payment successful redirect to course progress page
-      cancel_url: `http://localhost:5173/course-detail/${courseId}`,
+      success_url: `${process.env.FRONTEND_URL}/course-progress/${courseId}`, // once payment successful redirect to course progress page
+      cancel_url: `${process.env.FRONTEND_URL}/course-detail/${courseId}`,
       metadata: {
         courseId: courseId,
         userId: userId,
@@ -78,15 +78,13 @@ export const stripeWebhook = async (req, res) => {
   let event;
 
   try {
-    const payloadString = JSON.stringify(req.body, null, 2);
+    const payloadString = req.rawBody;
     const secret = process.env.WEBHOOK_ENDPOINT_SECRET;
 
-    const header = stripe.webhooks.generateTestHeaderString({
-      payload: payloadString,
-      secret,
-    });
+    // Use the actual signature header sent by Stripe
+    const signature = req.headers["stripe-signature"];
 
-    event = stripe.webhooks.constructEvent(payloadString, header, secret);
+    event = stripe.webhooks.constructEvent(payloadString, signature, secret);
   } catch (error) {
     console.error("Webhook error:", error.message);
     return res.status(400).send(`Webhook error: ${error.message}`);

@@ -47,7 +47,7 @@ const LectureTab = () => {
     }
   }, [lecture]);
 
-  const MEDIA_API = "http://localhost:8080/api/media/upload";
+  const MEDIA_API = import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}media/upload` : "http://localhost:8080/api/media/upload";
 
   // 1. Only capture the file locally, do NOT upload yet
   const fileChangeHandler = (e) => {
