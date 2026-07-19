@@ -78,27 +78,40 @@ export const stripeWebhook = async (req, res) => {
   let event;
 
   try {
+    console.log("==================================")
+    console.log("Webhook request received:", req.body);
+    console.log("Request Headers:", Object.fromEntries(req.headers.entries()));
+    console.log("==================================")
     const payloadString = req.rawBody;
     const secret = process.env.WEBHOOK_ENDPOINT_SECRET;
-
+    console.log("==================================")
+    console.log("Payload String:", payloadString);
+    console.log("Webhook Secret:", secret);
+    console.log("==================================")
     // Use the actual signature header sent by Stripe
     const signature = req.headers["stripe-signature"];
 
     event = stripe.webhooks.constructEvent(payloadString, signature, secret);
+
   } catch (error) {
     console.error("Webhook error:", error.message);
     return res.status(400).send(`Webhook error: ${error.message}`);
   }
-
+  console.log(event.type)
   if (event.type === "checkout.session.completed") {
     console.log("checkout.session.completed received");
 
     try {
       const session = event.data.object;
-
+      console.log("==================================")
+      console.log("Session:", session);
+      console.log("==================================")
       const purchase = await CoursePurshase.findOne({
         paymentId: session.id,
       }).populate("courseId");
+      console.log("==================================")
+      console.log("Purchase:", purchase);
+      console.log("==================================")
 
       if (!purchase) {
         return res.status(404).json({ message: "Purchase not found" });
