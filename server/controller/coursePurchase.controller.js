@@ -22,7 +22,7 @@ export const createCheckoutSession = async (req, res) => {
       courseId,
       userId,
       amount: course.coursePrice,
-      status: "pending",
+      status: "completed", // Immediately mark as completed
     });
 
     // create a stripe checkout session
@@ -61,6 +61,20 @@ export const createCheckoutSession = async (req, res) => {
     // Save the purchase record
     newPurchase.paymentId = session.id;
     await newPurchase.save();
+
+    // Enroll student immediately
+    await User.findByIdAndUpdate(userId, {
+      $addToSet: {
+        enrolledCourses: courseId,
+      },
+    });
+
+    // Add student to course immediately
+    await Course.findByIdAndUpdate(courseId, {
+      $addToSet: {
+        enrolledStudents: userId,
+      },
+    });
 
     return res.status(200).json({
       success: true,
