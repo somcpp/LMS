@@ -33,7 +33,8 @@ export const createUser = async (req, res) => {
     return res.status(201)
     .cookie("token", token, {
                 httpOnly: true,
-                sameSite: "strict",
+                sameSite: "none",
+                secure: true,
                 maxAge: 24*60*60*1000
               })
     .json({
@@ -82,7 +83,8 @@ export const loginUser = async (req, res) => {
     return res.status(200)
               .cookie("token", token, {
                 httpOnly: true,
-                sameSite: "strict",
+                sameSite: "none",
+                secure: true,
                 maxAge: 24*60*60*1000
               })
               .json({
@@ -101,7 +103,9 @@ export const loginUser = async (req, res) => {
 export const logoutUser = async (req,res) => {
   try {
     res.cookie("token",null,{
-      expires: new Date(Date.now())
+      expires: new Date(Date.now()),
+      sameSite: "none",
+      secure: true
     })
     .json({
       success: true,
