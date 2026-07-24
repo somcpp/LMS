@@ -17,11 +17,13 @@ const PORT = process.env.PORT;
 
 const app = express();
 
-app.use(express.json({
-  verify: (req, res, buf) => {
-    req.rawBody = buf;
+app.use((req, res, next) => {
+  if (req.originalUrl === '/api/purchase/webhook') {
+    next();
+  } else {
+    express.json()(req, res, next);
   }
-}));
+});
 app.use(cookieParser());
 app.use(cors({
   origin: process.env.FRONTEND_URL,

@@ -82,7 +82,7 @@ export const stripeWebhook = async (req, res) => {
     console.log("Webhook request received:", req.body);
     console.log("Request Headers:", Object.fromEntries(req.headers.entries()));
     console.log("==================================")
-    const payloadString = req.rawBody;
+    const payloadString = req.body;
     const secret = process.env.WEBHOOK_ENDPOINT_SECRET;
     console.log("==================================")
     console.log("Payload String:", payloadString);
