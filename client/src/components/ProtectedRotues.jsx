@@ -33,7 +33,7 @@ export const AdminRoute = ({children}) => {
 
 export const PurchasedCourse = ({children}) => {
   const {courseId} = useParams();
-  const {data, isLoading} = useGet_Courses_Detail_With_StatusQuery();
+  const {data, isLoading} = useGet_Courses_Detail_With_StatusQuery(courseId);
   if(isLoading) return <h1>Loading...</h1>
   return data?.purchased ? children : <Navigate to={`/course-detail/${courseId}`} />
 }
